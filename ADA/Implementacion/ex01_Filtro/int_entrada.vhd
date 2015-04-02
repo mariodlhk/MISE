@@ -38,7 +38,7 @@ entity int_entrada is
 		Reset	: in std_logic;
 		Validacion : in std_logic;
 		Dato_in	: in std_logic_vector(15 downto 0);
-		Entradas_ent: out std_logic_vector(7 downto 0));
+		Entradas_ent: out std_logic_vector(7 downto 0);
 		Entradas_frc: out std_logic_vector(7 downto 0));
 	end int_entrada;
 	
