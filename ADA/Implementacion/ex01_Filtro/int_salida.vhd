@@ -41,7 +41,7 @@ entity int_salida is
 		Salidas_ent : in std_logic_vector(7 downto 0);
 		Salidas_frc : in std_logic_vector(7 downto 0);
 		Fin		: in std_logic);
-	end component;
+	end int_salida;
 	
 architecture Behavioral of int_salida is
 
