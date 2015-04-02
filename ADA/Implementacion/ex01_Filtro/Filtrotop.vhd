@@ -1,5 +1,5 @@
 ---------------------------------------------------------
--- Filtrotop
+-- Filtro_top
 ---------------------------------------------------------
 
 library ieee;
@@ -8,7 +8,7 @@ library ieee;
    use ieee.std_logic_arith.all;
    use ieee.std_logic_unsigned.all;
    
-entity Filtrotop is
+entity Filtro_top is
 
   port (
     -- Señales control
@@ -23,9 +23,9 @@ entity Filtrotop is
     Valid_out   : out  std_logic;   -- Validacion del dato de entrada
     Ack_out		: in std_logic;		-- Ack del dato de salida
 
-end Filtrotop;
+end Filtro_top;
 
-architecture RTL of Filtrotop is
+architecture RTL of Filtro_top is
 	----------------------------
 	-- Componentes del sistema 
 	----------------------------
@@ -55,8 +55,8 @@ architecture RTL of Filtrotop is
 			Reset	: in std_logic;
 			Entradas: in std_logic_vector(15 downto 0);
 			Salidas: out std_logic_vector(15 downto 0);
-			flags	: in  std_logic_vector(2 downto 0);
-			mandos	: out std_logic_vector(2 downto 0));
+			flags	: out  std_logic_vector(2 downto 0);
+			mandos	: in std_logic_vector(2 downto 0));
 	end component;
 	
 	component control
