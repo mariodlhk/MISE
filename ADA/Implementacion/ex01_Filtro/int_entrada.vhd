@@ -40,7 +40,7 @@ entity int_entrada is
 		Dato_in	: in std_logic_vector(15 downto 0);
 		Entradas_ent: out std_logic_vector(7 downto 0));
 		Entradas_frc: out std_logic_vector(7 downto 0));
-	end component;
+	end int_entrada;
 	
 architecture Behavioral of int_entrada is
 
