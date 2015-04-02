@@ -128,7 +128,6 @@ architecture RTL of Filtrotop is
 				Validacion <= inicio;
 				
 				
-				
 end RTL;
 	
 	
