@@ -34,13 +34,13 @@ use ieee.std_logic_unsigned.all;
 
 entity int_entrada is
     port (
-		Clk		: in std_logic;
+		Clk	: in std_logic;
 		Reset	: in std_logic;
 		Validacion : in std_logic;
 		Dato_in	: in std_logic_vector(15 downto 0);
 		Entradas_ent: out std_logic_vector(7 downto 0);
 		Entradas_frc: out std_logic_vector(7 downto 0));
-	end int_entrada;
+end int_entrada;
 	
 architecture Behavioral of int_entrada is
 

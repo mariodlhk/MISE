@@ -4,7 +4,7 @@
 -- 
 -- Create Date:    22:39:46 11/16/2014 
 -- Design Name: 
--- Module Name:    int_salida - Behavioral 
+-- Module Name:    int_entrada - Behavioral 
 -- Project Name: 
 -- Target Devices: 
 -- Tool versions: 
@@ -32,27 +32,26 @@ use ieee.std_logic_unsigned.all;
 --library UNISIM;
 --use UNISIM.VComponents.all;
 
-entity int_salida is
+entity int_entrada is
     port (
 		Clk	: in std_logic;
 		Reset	: in std_logic;
-		Validacion : out std_logic;
-		TD	: out std_logic_vector(15 downto 0);
-		Salidas_ent : in std_logic_vector(7 downto 0);
-		Salidas_frc : in std_logic_vector(7 downto 0);
-		Fin	: in std_logic);
-end int_salida;
+		Validacion : in std_logic;
+		Dato_in	: in std_logic_vector(15 downto 0);
+		Entradas_ent: out std_logic_vector(7 downto 0);
+		Entradas_frc: out std_logic_vector(7 downto 0));
+end int_entrada;
 	
-architecture Behavioral of int_salida is
+architecture Behavioral of int_entrada is
 
 	PROCESS (Clk, Reset)
 	BEGIN
-		IF (Reset = '0') THEN
-			TD <= (others => '0');
-			Validacion <= '0';
-		ELSIF (Clk'event) and Clk = '1' and Fin = '1' THEN
-			TD <= Salidas_ent & Salidas_frc;
-			Validacion <= '1';
+		IF (Reset = '0') or Validacion = '0' THEN
+			Entradas_ent <= (others => '0');
+			Entradas_frc <= (others => '0');
+		ELSIF (Clk'event) and Clk = '1' and Validacion = '1' THEN
+			Entradas_ent <= Dato_in(15 downto 8);
+			Entradas_frc <= Dato_in(7 downto 0);
 		END IF;
 	END PROCESS;
 	

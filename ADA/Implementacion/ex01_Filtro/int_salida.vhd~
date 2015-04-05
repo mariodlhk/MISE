@@ -34,21 +34,21 @@ use ieee.std_logic_unsigned.all;
 
 entity int_salida is
     port (
-		Clk	: in std_logic;
+		Clk		: in std_logic;
 		Reset	: in std_logic;
 		Validacion : out std_logic;
-		TD	: out std_logic_vector(15 downto 0);
+		TD 		: out std_logic_vector(15 downto 0);
 		Salidas_ent : in std_logic_vector(7 downto 0);
 		Salidas_frc : in std_logic_vector(7 downto 0);
-		Fin	: in std_logic);
-end int_salida;
+		Fin		: in std_logic);
+	end int_salida;
 	
 architecture Behavioral of int_salida is
 
 	PROCESS (Clk, Reset)
 	BEGIN
 		IF (Reset = '0') THEN
-			TD <= (others => '0');
+			Salidas <= (others => '0');
 			Validacion <= '0';
 		ELSIF (Clk'event) and Clk = '1' and Fin = '1' THEN
 			TD <= Salidas_ent & Salidas_frc;

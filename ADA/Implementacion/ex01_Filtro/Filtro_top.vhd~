@@ -12,7 +12,7 @@ entity Filtro_top is
 
   port (
     -- Señales control
-    Reset		: in  std_logic;   -- Reset asincrono por nivel bajo
+	Reset		: in  std_logic;   -- Reset asincrono por nivel bajo
     Clk			: in  std_logic;   -- Reloj del sistema
 	-- Señales interfaz de entrada
     Dato_in		: in  std_logic_vector(15 downto 0);  -- Dato recibido

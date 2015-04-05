@@ -49,7 +49,7 @@ architecture Behavioral of datapath is
 	filtro_0, filtro_1, filtro_2, filtrar);
 	SIGNAL next_state, current_state : estados;
 	SIGNAL mando_leido : std_logic_vector(2 downto 0);
-	SIGNAL tmp_1, tmp_2, tmp3, tmp_4 : std_logic_vector(15 downto 0);
+	SIGNAL tmp_1, tmp_2, tmp3, tmp_4
 
 	PROCESS (mando_leido)
 	BEGIN
@@ -60,7 +60,7 @@ architecture Behavioral of datapath is
 				Salidas_frc <= (others => '0');
 				flags <= (others => '0');
 			WHEN filtro_0 =>
-				tmp_1 <= b1 * Entradas_ent;
+				b1 * Entradas_ent;
 				Entradas_frc;	
 
 		END CASE;				
