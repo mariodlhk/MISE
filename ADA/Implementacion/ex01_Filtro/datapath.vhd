@@ -36,17 +36,15 @@ entity datapath is
     port (
 		Clk	: in std_logic;
 		Reset	: in std_logic;
-		Entradas_ent: in std_logic_vector(7 downto 0);
-		Entradas_frc: in std_logic_vector(7 downto 0);
-		Salidas_ent : out std_logic_vector(7 downto 0);
-		Salidas_frc : out std_logic_vector(7 downto 0);
+		Entrada: in std_logic_vector(15 downto 0);
+		Salida : out std_logic_vector(15 downto 0);
 		flags	: out  std_logic_vector(2 downto 0);
 		mandos	: in std_logic_vector(2 downto 0));
 end datapath;
 	
 architecture Behavioral of datapath is
 	TYPE estados IS (idle, 
-	filtro_0, filtro_1, filtro_2, filtrar);
+	estado_0, estado_1, estado_2, estado_3);
 	SIGNAL next_state, current_state : estados;
 	SIGNAL mando_leido : std_logic_vector(2 downto 0);
 	SIGNAL tmp_1, tmp_2, tmp3, tmp_4 : std_logic_vector(15 downto 0);
@@ -56,21 +54,41 @@ architecture Behavioral of datapath is
 		-- mando_leido a tipo estados
 		CASE mando_leido IS
 			WHEN idle =>
-				Salidas_ent <= (others => '0');
-				Salidas_frc <= (others => '0');
+				Salida <= (others => '0');
 				flags <= (others => '0');
-			WHEN filtro_0 =>
-				tmp_1 <= b1 * Entradas_ent;
-				Entradas_frc;	
-
+				Salida_prev <= (others => '0');
+				sv1 <= (others => '0');
+				sv2 <= (others => '0');
+				sv3 <= (others => '0');
+				sv4 <= (others => '0');
+			WHEN estado_0 =>
+				x_1 <= b1 * Entrada;
+				x_2 <= b2 * Entrada;
+				x_3 <= b3 * Entrada;
+				x_4 <= b4 * Entrada;
+				x_5 <= b5 * Entrada;
+				y_2 <= Salida_prev * neg_a2;
+				y_3 <= Salida_prev * neg_a3;
+				y_4 <= Salida_prev * neg_a4;
+				y_5 <= Salida_prev * neg_a5;
+			WHEN estado_1 =>
+				tmp_1 <= x_1 + sv1;
+				tmp_2 <= x_2 + sv2;
+				tmp_3 <= x_3 + sv3;
+				tmp_4 <= x_4 + sv4;
+			WHEN estado_2 =>
+				Salida_tmp <= tmp_1 * inverso_a1;
+				sv1 <= tmp_2 + y_2;
+				sv2 <= tmp_3 + y_3;
+				sv3 <= tmp_4 + y_4;
+				sv4 <= x_5 + y_5;
 		END CASE;				
 	END PROCESS;
 	
 	PROCESS (Clk, Reset)
 	BEGIN
 		IF (Reset = '0') THEN
-			Salidas_ent <= (others => '0');
-			Salidas_frc <= (others => '0');
+			Salida <= (others => '0');
 			flags <= (others => '0');
 			next_state <= idle;
 		ELSIF (Clk'event) and Clk = '1' THEN
