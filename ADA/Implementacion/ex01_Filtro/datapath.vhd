@@ -44,17 +44,33 @@ end datapath;
 	
 architecture Behavioral of datapath is
 	TYPE estados IS (idle, 
-	estado_0, estado_1, estado_2, estado_3);
-	SIGNAL next_state, current_state : estados;
-	SIGNAL mando_leido : std_logic_vector(2 downto 0);
-	SIGNAL tmp_1, tmp_2, tmp3, tmp_4 : std_logic_vector(15 downto 0);
+	estado_0, estado_1, estado_2);
+	CONSTANT FIN : integer := 1;
+	CONSTANT inverso_a1 : tipo := x;
+	CONSTANT neg_a2 : tipo := x;
+	CONSTANT neg_a3 : tipo := x;
+	CONSTANT neg_a4 : tipo := x;
+	CONSTANT neg_a5 : tipo := x;
+	CONSTANT b1 : tipo := x;
+	CONSTANT b2 : tipo := x;
+	CONSTANT b3 : tipo := x;
+	CONSTANT b4 : tipo := x;
+	CONSTANT b5 : tipo := x;
 
-	PROCESS (mando_leido)
+	SIGNAL estado_siguiente, estado_actual : estados;
+	SIGNAL sv1, sv2, sv3, sv4 : std_logic_vector(15 downto 0);
+	SIGNAL tmp_1, tmp_2, tmp3, tmp_4 : std_logic_vector(15 downto 0);
+	SIGNAL x_1, x_2, x_3, x_4, x_5, y_2, y_3, y_4, y_5 : std_logic_vector(15 downto 0);
+	SIGNAL Salida_prev, Salida_tmp : std_logic_vector(15 downto 0);
+
+	PROCESS (estado_actual, mandos)
 	BEGIN
+		estado_siguiente <= estado_actual;
 		-- mando_leido a tipo estados
 		CASE mando_leido IS
 			WHEN idle =>
 				Salida <= (others => '0');
+				Salida_prev <= (others => '0');
 				flags <= (others => '0');
 				Salida_prev <= (others => '0');
 				sv1 <= (others => '0');
@@ -62,6 +78,7 @@ architecture Behavioral of datapath is
 				sv3 <= (others => '0');
 				sv4 <= (others => '0');
 			WHEN estado_0 =>
+				flags <= (others => '0');
 				x_1 <= b1 * Entrada;
 				x_2 <= b2 * Entrada;
 				x_3 <= b3 * Entrada;
@@ -71,28 +88,34 @@ architecture Behavioral of datapath is
 				y_3 <= Salida_prev * neg_a3;
 				y_4 <= Salida_prev * neg_a4;
 				y_5 <= Salida_prev * neg_a5;
+				estado_siguiente <= estado_1;
 			WHEN estado_1 =>
 				tmp_1 <= x_1 + sv1;
 				tmp_2 <= x_2 + sv2;
 				tmp_3 <= x_3 + sv3;
 				tmp_4 <= x_4 + sv4;
+				estado_siguiente <= estado_2;
 			WHEN estado_2 =>
 				Salida_tmp <= tmp_1 * inverso_a1;
 				sv1 <= tmp_2 + y_2;
 				sv2 <= tmp_3 + y_3;
 				sv3 <= tmp_4 + y_4;
 				sv4 <= x_5 + y_5;
-		END CASE;				
+				flags <= FIN;
+		END CASE;	
+		IF (mandos = valida_dato) THEN
+			estado_siguiente <= estado_0;
+		END IF;		
 	END PROCESS;
 	
-	PROCESS (Clk, Reset)
+	PROCESS (Clk, Reset) 
 	BEGIN
 		IF (Reset = '0') THEN
 			Salida <= (others => '0');
 			flags <= (others => '0');
-			next_state <= idle;
+			estado_actual <= idle;
 		ELSIF (Clk'event) and Clk = '1' THEN
-			mando_leido <= mandos;
+			estado_actual <= estado_siguiente;
 		END IF;
 	END PROCESS;
 	
