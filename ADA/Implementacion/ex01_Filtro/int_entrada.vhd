@@ -38,21 +38,39 @@ entity int_entrada is
 		Reset	: in std_logic;
 		Validacion : in std_logic;
 		Dato_in	: in std_logic_vector(15 downto 0);
-		Entradas_ent: out std_logic_vector(7 downto 0);
-		Entradas_frc: out std_logic_vector(7 downto 0));
+		Entrada: out std_logic_vector(15 downto 0);
 end int_entrada;
 	
 architecture Behavioral of int_entrada is
+	TYPE estados IS (idle, lectura, leido);
+	SIGNAL estado_actual, estado_siguiente : estados;
+	SIGNAL Entrada_tmp : std_logic_vector(15 downto 0);
 
-	PROCESS (Clk, Reset)
+	PROCESS (estado actual)
+	BEGIN
+		estado_siguiente <= estado_actual;
+		CASE estado_actual IS
+			WHEN idle =>
+				Entrada_tmp <= (others => '0');
+			WHEN lectura =>
+				Entrada_tmp <= Dato_in;
+				estado_siguiente <= leido;
+			WHEN leido =>
+				-- ESPERA
+				;
+		END CASE;
+	END PROCESS;
+
+	PROCESS (Clk, Reset, Validacion)
 	BEGIN
 		IF (Reset = '0') THEN
-			Entradas_ent <= (others => '0');
-			Entradas_frc <= (others => '0');
-		ELSIF (Clk'event) and Clk = '1' and Validacion = '1' THEN
-			Entradas_ent <= Dato_in(15 downto 8);
-			Entradas_frc <= Dato_in(7 downto 0);
+			estado_actual <= idle;
+		ELSIF (Clk'event) and Clk = '1' THEN
+			Entrada <= Entrada_tmp(15 downto 0);
+			estado_actual <= estado_siguiente;
 		END IF;
+		IF (Validacion = '1') THEN
+			estado_actual <= lectura;
 	END PROCESS;
 	
 end behavioral

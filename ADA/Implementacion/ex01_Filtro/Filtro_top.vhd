@@ -11,14 +11,14 @@ library ieee;
 entity Filtro_top is
 
   port (
-    -- SeÃ±ales control
+    -- Señales control
     Reset		: in  std_logic;   -- Reset asincrono por nivel bajo
     Clk			: in  std_logic;   -- Reloj del sistema
-	-- SeÃ±ales interfaz de entrada
+	-- Señales interfaz de entrada
     Dato_in		: in  std_logic_vector(15 downto 0);  -- Dato recibido
-    Valid_in	: in  std_logic;   -- Validacion del dato de entrada
+    Valid_in		: in  std_logic;   -- Validacion del dato de entrada
     Ack_in		: out std_logic;   -- ACK del dato de entrada
-	-- SeÃ±ales interfaz de salida
+	-- Señales interfaz de salida
     Dato_out	: out std_logic_vector(15 downto 0);  -- Dato de salida
     Valid_out   : out  std_logic;   -- Validacion del dato de entrada
     Ack_out		: in std_logic;		-- Ack del dato de salida
@@ -36,35 +36,34 @@ architecture RTL of Filtro_top is
 			Reset	: in std_logic;
 			Validacion : in std_logic;
 			Dato_in	: in std_logic_vector(15 downto 0);
-			Entradas: out std_logic_vector(15 downto 0));
+			Entrada: out std_logic_vector(15 downto 0));
 	end component;
 	
 	component int_salida
 		port (
-			Clk		: in std_logic;
+			Clk	: in std_logic;
 			Reset	: in std_logic;
-			Validacion : out std_logic;
-			TD : out std_logic_vector(15 downto 0);
-			Salidas : in std_logic_vector(15 downto 0);
-			Fin		: in std_logic);
+			Validacion	: out std_logic;
+			Dato_out	: out std_logic_vector(15 downto 0);
+			Salida 	: in std_logic_vector(15 downto 0);
+			Fin	: in std_logic);
 	end component;
 	
 	component datapath
 		port (
 			Clk		: in std_logic;
 			Reset	: in std_logic;
-			Entradas: in std_logic_vector(15 downto 0);
-			Salidas: out std_logic_vector(15 downto 0);
+			Entrada	: in std_logic_vector(15 downto 0);
+			Salida	: out std_logic_vector(15 downto 0);
 			flags	: out  std_logic_vector(2 downto 0);
 			mandos	: in std_logic_vector(2 downto 0));
 	end component;
 	
 	component control
 		port (
-			Clk		: in std_logic;
+			Clk	: in std_logic;
 			Reset	: in std_logic;
-			Validacion : in std_logic;
-			Fin		: out std_logic;
+			Fin	: out std_logic;
 			flags	: in  std_logic_vector(2 downto 0);
 			mandos	: out std_logic_vector(2 downto 0));
 	end component;
@@ -86,25 +85,25 @@ architecture RTL of Filtro_top is
 			port map (
 				Clk   => Clk,
 				Reset => Reset,
-				Validacion => inicio,
-				Dato_in	=> RD,
-				Entradas => entradas);
+				Validacion => Valid_in,
+				Dato_in	=> Dato_in,
+				Entrada => entradas);
 				
 		Salida: int_salida
 			port map (
 				Clk   => Clk,
 				Reset => Reset,
-				Validacion => fin,
-				TD => Dato_out,
-				Salidas => salidas,
+				Validacion => Valid_out,
+				Dato_out => Dato_out,
+				Salida => salidas,
 				Fin => fin);
 				
 		Datapath: datapath
 			port map (
 				Clk   => Clk,
 				Reset => Reset,
-				Entradas => entradas,
-				Salidas => salidas,
+				Entrada => entradas,
+				Salida => salidas,
 				flags => flags,
 				mandos => mandos);
 				
@@ -112,21 +111,9 @@ architecture RTL of Filtro_top is
 			port map (
 				Clk   => Clk,
 				Reset => Reset,
-				Validacion => inicio,
-				Fin		=> fin,
+				Fin	=> fin,
 				flags	=> flags,
 				mandos 	=> mandos);
-				
-		Clocking : process (Clk, Reset)
-		begin
-			if Reset = '0' then
-				entradas <= (others => '0');
-				salidas <= (others => '0');
-				fin <= '1';
-			elsif Clk'event and Clk = '1' then
-				RD <= Dato_in;
-				Validacion <= inicio;
-				
 end RTL;
 	
 	

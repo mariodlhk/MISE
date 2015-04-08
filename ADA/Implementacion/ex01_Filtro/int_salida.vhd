@@ -37,23 +37,44 @@ entity int_salida is
 		Clk	: in std_logic;
 		Reset	: in std_logic;
 		Validacion : out std_logic;
-		TD	: out std_logic_vector(15 downto 0);
-		Salidas_ent : in std_logic_vector(7 downto 0);
-		Salidas_frc : in std_logic_vector(7 downto 0);
+		Dato_out   : out std_logic_vector(15 downto 0);
+		Salida  : in std_logic_vector(15 downto 0);
 		Fin	: in std_logic);
 end int_salida;
 	
 architecture Behavioral of int_salida is
+	TYPE estados IS (idle, escritura, escrito);
+	SIGNAL estado_actual, estado_siguiente : estados;
+	SIGNAL Dato_out_tmp : std_logic_vector(15 downto 0);
+	SIGNAL Validacion_tmp : std_logic;
 
-	PROCESS (Clk, Reset)
+	PROCESS (estado actual)
+	BEGIN
+		estado_siguiente <= estado_actual;
+		CASE estado_actual IS
+			WHEN idle =>
+				Dato_out_tmp <= (others => '0');
+				Validacion_tmp <= '0';
+			WHEN escritura =>
+				Dato_out_tmp <= Salida;
+				estado_siguiente <= escrito;
+				Validacion_tmp <= '0';
+			WHEN escrito =>
+				-- ESPERA
+				Validacion_tmp <= '1';
+		END CASE;
+	END PROCESS;
+
+	PROCESS (Clk, Reset, Fin)
 	BEGIN
 		IF (Reset = '0') THEN
-			TD <= (others => '0');
-			Validacion <= '0';
-		ELSIF (Clk'event) and Clk = '1' and Fin = '1' THEN
-			TD <= Salidas_ent & Salidas_frc;
-			Validacion <= '1';
+			estado_actual <= idle;
+		ELSIF (Clk'event) and Clk = '1' THEN
+			Dato_out <= Dato_out_tmp;
+			Validacion <= Validacion_tmp;
+			estado_actual <= estado_siguiente;
 		END IF;
+		IF (Fin = '1') THEN
+			estado_actual <= escritura;
 	END PROCESS;
-	
 end behavioral
